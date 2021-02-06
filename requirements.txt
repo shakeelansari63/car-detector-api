@@ -1,0 +1,7 @@
+python3.8
+flask
+numpy
+keras
+h5py
+tensorflow
+opencv-contrib-python
