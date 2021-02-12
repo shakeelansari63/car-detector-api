@@ -104,10 +104,10 @@ def train_model():
     #   Reshape the data for consistency
     ##############################################
     train_features = np.array(train_features)
-    train_features = train_features.reshape(train_data_size,
-                                            img_rows,
-                                            img_cols,
-                                            img_clrs)
+    train_features = train_features.reshape((train_data_size,
+                                             img_rows,
+                                             img_cols,
+                                             img_clrs))
     train_features = train_features.astype('float32')
     train_features /= 255
 
@@ -116,10 +116,10 @@ def train_model():
     train_labels = np_utils.to_categorical(train_labels, 2)
 
     test_features = np.array(test_features)
-    test_features = test_features.reshape(test_data_size,
-                                          img_rows,
-                                          img_cols,
-                                          img_clrs)
+    test_features = test_features.reshape((test_data_size,
+                                           img_rows,
+                                           img_cols,
+                                           img_clrs))
     test_features = test_features.astype('float32')
     test_features /= 255
 

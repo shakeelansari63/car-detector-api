@@ -30,7 +30,7 @@ def predict(img):
         img_array = np.array(img_array)
 
         # Reshape to correct Size
-        img_array = img_array.reshape(1, imrow, imcol, imclrs)
+        img_array = img_array.reshape((1, imrow, imcol, imclrs))
         img_array = img_array.astype('float32')
         img_array /= 255
 
