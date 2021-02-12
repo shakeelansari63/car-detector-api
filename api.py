@@ -5,6 +5,7 @@ import os
 app = Flask(__name__)
 
 
+# Root page
 @app.route('/')
 def root():
     response = {
@@ -13,6 +14,13 @@ def root():
     return jsonify(response), 200
 
 
+# Error Handler
+@app.errorhandler(404)
+def route_not_found(e):
+    return jsonify({"message": "Invalid route"}), 404
+
+
+# Prediction route
 @app.route('/predict')
 def predict():
     img = request.args.get('img')
