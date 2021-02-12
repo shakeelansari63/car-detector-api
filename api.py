@@ -22,7 +22,7 @@ def predict():
     else:
         try:
             pred = predict_cars(img)
-            return jsonify({"message": "Successful", "prediction": pred}), 200
+            return jsonify({"message": "Successfully Predicted", "prediction": pred}), 200
         except Exception as e:
             print(e)
             return jsonify({"message": "Image not found"}), 404
