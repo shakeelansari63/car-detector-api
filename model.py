@@ -17,6 +17,7 @@ python model.py train
 Help:
 python model.py help
 """
+    print(usg)
 
 
 if __name__ == '__main__':
@@ -25,8 +26,8 @@ if __name__ == '__main__':
         raise Exception('Error occured, cannot proceed further')
     else:
         opt, arg = getopt.getopt(sys.argv[1:], 'i:', ['image-file='])
-        print(opt)
-        print(arg)
+        # print(opt)
+        # print(arg)
 
         # As per arguments, follow action
         if len(arg) != 1:

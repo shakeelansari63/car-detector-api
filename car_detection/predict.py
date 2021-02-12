@@ -19,13 +19,6 @@ def predict(img):
     # Check if file exist
     if os.path.isfile(os.path.abspath(img)):
 
-        # Load model
-        model_file = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            'car_detection_using_cnn.h5'
-        )
-        classifier = load_model(model_file)
-
         # Compress image
         img = IMG(os.path.abspath(img))
         img.resize(imrow, imcol)
@@ -40,6 +33,13 @@ def predict(img):
         img_array = img_array.reshape(1, imrow, imcol, imclrs)
         img_array = img_array.astype('float32')
         img_array /= 255
+
+        # Load model
+        model_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'car_detection_using_cnn.h5'
+        )
+        classifier = load_model(model_file)
 
         # Predict using the classifier
         prediction = classifier.predict(img_array)
