@@ -15,6 +15,9 @@ class IMG:
         self.img = cv.resize(self.img, dsize=(width, height),
                              interpolation=cv.INTER_AREA)
 
+    def get_img(self):
+        return self.img
+
     def save(self, tgt_path):
         cv.imwrite(tgt_path, self.img)
 
