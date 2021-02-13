@@ -130,3 +130,9 @@ dmypy.json
 
 # Model h5 file
 *.h5
+
+# VS Code setting
+.vscode
+
+# Images used for prediction
+images/*
