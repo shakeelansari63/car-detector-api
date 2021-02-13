@@ -11,8 +11,20 @@ import os
 import numpy as np
 
 
+def load_classifier():
+    # Load model file
+    model_file = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'car_detection_using_cnn.h5'
+    )
+
+    classifier = load_model(model_file)
+
+    return classifier
+
+
 # Function to predict
-def predict(img):
+def predict(img, classifier=None):
     # Set variables
     imrow, imcol, imclrs = 100, 100, 3
 
@@ -34,12 +46,8 @@ def predict(img):
         img_array = img_array.astype('float32')
         img_array /= 255
 
-        # Load model
-        model_file = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            'car_detection_using_cnn.h5'
-        )
-        classifier = load_model(model_file)
+        if classifier is None:
+            classifier = load_classifier()
 
         # Predict using the classifier
         prediction = classifier.predict(img_array)

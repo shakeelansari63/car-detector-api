@@ -2,7 +2,7 @@
 from cheroot.wsgi import Server as WSGIServer
 # Flask app requires
 from flask import Flask, jsonify, request
-from car_detection import predict as predict_cars
+from car_detection import predict as predict_cars, load_classifier
 import os
 # Werkzeug Utils for Securing file name
 from werkzeug.utils import secure_filename
@@ -31,6 +31,7 @@ dictConfig({
 app = Flask(__name__)
 app.config['image_dir'] = 'images'
 app.config['allowed_files'] = ['jpg', 'jpeg']
+app.config['classifier'] = load_classifier()
 
 
 # Error Handler
@@ -88,7 +89,7 @@ def predict():
         return jsonify({"message": "Image missing "}), 400
     else:
         try:
-            pred = predict_cars(img)
+            pred = predict_cars(img, app.config['classifier'])
             return jsonify({"message": "Successfully Predicted",
                             "prediction": pred}), 200
 
