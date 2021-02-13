@@ -135,4 +135,4 @@ dmypy.json
 .vscode
 
 # Images used for prediction
-images/*
+images/*.jpg

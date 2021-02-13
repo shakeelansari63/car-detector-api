@@ -11,7 +11,7 @@ This project also use Flask for API.
   
 Other required packages are documented in [requirements.txt](https://github.com/shakeelansari63/car-detector-api/blob/main/requirements.txt)  
   
-## Installation
+## Install Dependencies
 ```
 python setup.py install
 ```  
