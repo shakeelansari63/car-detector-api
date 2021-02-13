@@ -4,28 +4,12 @@ from cheroot.wsgi import Server as WSGIServer
 from flask import Flask, jsonify, request
 from car_detection import predict as predict_cars, load_classifier
 import os
-# Werkzeug Utils for Securing file name
-from werkzeug.utils import secure_filename
+# Datetime module for builing file name
+import datetime
+import random
 # Enable Logging before creating app
 import logging
-from logging.config import dictConfig
 
-# Logging Config
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'DEBUG',
-        'handlers': ['wsgi']
-    }
-})
 
 # Make Flask App
 app = Flask(__name__)
@@ -34,6 +18,25 @@ app.config['allowed_files'] = ['jpg', 'jpeg']
 app.config['classifier'] = load_classifier()
 
 
+#######################################
+#          Helper Functions           #
+#######################################
+def generate_file_name():
+    now = datetime.datetime.now()
+    formatted_date = now.strftime("%Y%m%d%H%M%S%f")
+
+    random_seed = str(random.randint(1, 99999)).zfill(5)
+
+    tgt_file_id = formatted_date + random_seed
+    tgt_file = os.path.join(app.config['image_dir'],
+                            tgt_file_id + '.jpg')
+
+    return tgt_file_id, tgt_file
+
+
+#######################################
+#              Routes                 #
+#######################################
 # Error Handler
 @app.errorhandler(404)
 def route_not_found(e):
@@ -64,10 +67,8 @@ def upload():
     if file.filename.rsplit('.', 1)[1].lower() not in app.config['allowed_files']:
         return jsonify({'message': 'Invalid file extension'}), 400
 
-    # Secure the target file name
-    tgt_file = os.path.join(app.config['image_dir'],
-                            secure_filename(file.filename)
-                            )
+    # Genereate new target file name
+    file_id, tgt_file = generate_file_name()
 
     # Write the file on server
     file.save(tgt_file)
@@ -75,7 +76,7 @@ def upload():
     # Check for prediction flag in request
     if os.path.isfile(tgt_file):
         return jsonify({'message': 'File uploaded successfully',
-                        'filename': tgt_file}), 200
+                        'imgid': file_id}), 200
     else:
         return jsonify({"message": "Unable to upload file"}), 500
 
@@ -83,19 +84,22 @@ def upload():
 # Prediction route
 @app.route('/predict', methods=['GET'])
 def predict():
+    imgid = request.args.get('imgid')
     img = request.args.get('img')
 
-    if not img:
-        return jsonify({"message": "Image missing "}), 400
-    else:
-        try:
-            pred = predict_cars(img, app.config['classifier'])
-            return jsonify({"message": "Successfully Predicted",
-                            "prediction": pred}), 200
+    if not img and not imgid:
+        return jsonify({"message": "Image parameter missing "}), 400
 
-        except Exception as e:
-            print(e)
-            return jsonify({"message": "Image not found"}), 404
+    if imgid:
+        img = os.path.join(app.config['image_dir'], imgid + '.jpg')
+    try:
+        pred = predict_cars(img, app.config['classifier'])
+        return jsonify({"message": "Successfully Predicted",
+                        "prediction": pred}), 200
+
+    except Exception as e:
+        logging.error(e)
+        return jsonify({"message": "Image file not found or invalid image"}), 404
 
 
 if __name__ == "__main__":
