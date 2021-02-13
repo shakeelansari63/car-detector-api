@@ -1,7 +1,7 @@
-python3.8
+#python3.6
 flask
+cheroot
 numpy
 keras
-h5py
 tensorflow
 opencv-contrib-python
