@@ -11,10 +11,21 @@ This project also use Flask for API.
   
 Other required packages are documented in [requirements.txt](https://github.com/shakeelansari63/car-detector-api/blob/main/requirements.txt)  
   
-## Install Dependencies
+## Install Dependencies and Setup
 ```
 python setup.py install
 ```  
+Pretrained models have been compressed and stored in project for space saving.  
+Next step is to unzip the model and copy to car_detection directory.  
+
+#### On Linux  
+```
+tar -xzvf car_detection_using cnn.tar.gz
+cp car_detection_using_cnn.h5 ./car_detection/
+```  
+  
+#### On Windows
+unzip the car_detection_using cnn.zip file and copy the car_detection_using_cnn.h5 to car_detection folder.  
   
 ## Start API Server
 ```
