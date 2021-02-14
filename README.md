@@ -20,12 +20,12 @@ Next step is to unzip the model and copy to car_detection directory.
 
 #### On Linux  
 ```
-tar -xzvf car_detection_using cnn.tar.gz
+tar -xzvf car_detection_using_cnn.tar.gz
 cp car_detection_using_cnn.h5 ./car_detection/
 ```  
   
 #### On Windows
-unzip the car_detection_using cnn.zip file and copy the car_detection_using_cnn.h5 to car_detection folder.  
+unzip the car_detection_using_cnn.zip file and copy the car_detection_using_cnn.h5 to car_detection folder.  
   
 ## Start API Server
 ```
