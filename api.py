@@ -108,7 +108,7 @@ def predict():
 
 if __name__ == "__main__":
     #app.run(host='0.0.0.0', port='8080', debug=True)
-    server = WSGIServer(('0.0.0.0', 8080), app)
+    server = WSGIServer(('0.0.0.0', 80), app)
     try:
         logging.info('Server Starting')
         server.start()
