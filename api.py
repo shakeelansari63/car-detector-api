@@ -35,7 +35,7 @@ def generate_file_name():
     tgt_file = os.path.join(app.config['image_dir'],
                             tgt_file_id + '.jpg')
 
-    return tgt_file_id, tgt_file
+    return tgt_file
 
 
 #######################################
@@ -55,8 +55,8 @@ def root():
 
 
 # Uplaod File
-@app.route('/upload', methods=['POST'])
-def upload():
+@app.route('/predict', methods=['POST'])
+def predict():
     # Check if file is sent with request
     if 'file' not in request.files:
         return jsonify({'message': 'File not posted'}), 400
@@ -72,43 +72,35 @@ def upload():
         return jsonify({'message': 'Invalid file extension'}), 400
 
     # Genereate new target file name
-    file_id, tgt_file = generate_file_name()
+    img = generate_file_name()
 
     # Write the file on server
-    file.save(tgt_file)
+    file.save(img)
 
     # Check for prediction flag in request
-    if os.path.isfile(tgt_file):
-        return jsonify({'message': 'File uploaded successfully',
-                        'imgid': file_id}), 200
+    if os.path.isfile(img):
+        # Predict image
+        try:
+            pred = predict_cars(img, app.config['classifier'])
+
+            # Delete files after prediction
+            os.remove(img)
+
+            return jsonify({"message": "Successfully Predicted",
+                            "prediction": pred}), 200
+
+        # Return error for files which cannot be read as image array
+        except Exception as e:
+            logging.error(e)
+            return jsonify({"message": "Invalid image file"}), 400
+
     else:
         return jsonify({"message": "Unable to upload file"}), 500
 
 
-# Prediction route
-@app.route('/predict', methods=['GET'])
-def predict():
-    imgid = request.args.get('imgid')
-    img = request.args.get('img')
-
-    if not img and not imgid:
-        return jsonify({"message": "Image parameter missing "}), 400
-
-    if imgid:
-        img = os.path.join(app.config['image_dir'], imgid + '.jpg')
-    try:
-        pred = predict_cars(img, app.config['classifier'])
-        return jsonify({"message": "Successfully Predicted",
-                        "prediction": pred}), 200
-
-    except Exception as e:
-        logging.error(e)
-        return jsonify({"message": "Image file not found or invalid image"}), 404
-
-
 if __name__ == "__main__":
     #app.run(host='0.0.0.0', port='8080', debug=True)
-    server = WSGIServer(('0.0.0.0', 80), app)
+    server = WSGIServer(('0.0.0.0', 8080), app)
     try:
         logging.info('Server Starting')
         server.start()

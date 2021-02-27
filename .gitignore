@@ -132,7 +132,7 @@ dmypy.json
 *.h5
 
 # VS Code setting
-.vscode
+.vscode/*
 
 # Images used for prediction
 images/*.jpg
