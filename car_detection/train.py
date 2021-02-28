@@ -13,6 +13,8 @@ from keras.utils import np_utils
 import os
 # Import Numpy for data reshaping
 import numpy as np
+# Labels
+from .manage_labels import read_labels
 
 
 def train_model():
@@ -20,77 +22,52 @@ def train_model():
     #   Set Variables
     ##############################################
     code_dir = os.path.dirname(os.path.abspath(__file__))
-    train_cars_dir = os.path.join(code_dir, "train_img/cars/")
-    train_no_cars_dir = os.path.join(code_dir, "train_img/no_cars/")
-    test_cars_dir = os.path.join(code_dir, "test_img/cars/")
-    test_no_cars_dir = os.path.join(code_dir, "test_img/no_cars/")
+    train_dir = os.path.join(code_dir, 'train')
+    test_dir = os.path.join(code_dir, 'test')
 
     train_features = []
     train_labels = []
     test_features = []
     test_labels = []
 
-    img_rows = 100
-    img_cols = 100
+    img_rows = 60
+    img_cols = 60
     img_clrs = 3
+
+    labels = read_labels()
+    print(labels)
 
     ##############################################
     #   Gererate Sets for Training Models
     ##############################################
     # Training Features and Labels for cars
-    for fl in os.listdir(train_cars_dir):
-        # Process only if image file
-        if fl.lower().endswith('.jpg') or fl.lower().endswith('.jpeg'):
+    for lbl_id, label in enumerate(labels):
+        train_feature_dir = os.path.join(train_dir, label)
+        test_feature_dir = os.path.join(test_dir, label)
+
+        print("Reading features from {}".format(label))
+
+        # Read all images from Training dir
+        for fl in os.listdir(train_feature_dir):
             # Read image file
-            img = cv.imread(os.path.join(train_cars_dir, fl))
+            img = cv.imread(os.path.join(train_feature_dir, fl))
             # Convert image to array
             feature = img_to_array(img)
             # Add features to training set
             train_features.append(feature)
             # Add Label as car to training set
-            train_labels.append(1)
+            train_labels.append(lbl_id)
 
-    # Training Features and Labels for non cars
-    for fl in os.listdir(train_no_cars_dir):
-        # Process only if image file
-        if fl.lower().endswith('.jpg') or fl.lower().endswith('.jpeg'):
+        # Read all images from Testing dir
+        for fl in os.listdir(test_feature_dir):
             # Read image file
-            img = cv.imread(os.path.join(train_no_cars_dir, fl))
-            # Convert image to array
-            feature = img_to_array(img)
-            # Add features to training set
-            train_features.append(feature)
-            # Add Label as car to training set
-            train_labels.append(0)
-
-    ##############################################
-    #   Gererate Sets for Testing Models
-    ##############################################
-    # Testing Features and Labels for cars
-    for fl in os.listdir(test_cars_dir):
-        # Process only if image file
-        if fl.lower().endswith('.jpg') or fl.lower().endswith('.jpeg'):
-            # Read image file
-            img = cv.imread(os.path.join(test_cars_dir, fl))
+            img = cv.imread(os.path.join(test_feature_dir, fl))
             # Convert image to array
             feature = img_to_array(img)
             # Add features to training set
             test_features.append(feature)
             # Add Label as car to training set
-            test_labels.append(1)
-
-    # Testing Features and Labels for non cars
-    for fl in os.listdir(test_no_cars_dir):
-        # Process only if image file
-        if fl.lower().endswith('.jpg') or fl.lower().endswith('.jpeg'):
-            # Read image file
-            img = cv.imread(os.path.join(test_no_cars_dir, fl))
-            # Convert image to array
-            feature = img_to_array(img)
-            # Add features to training set
-            test_features.append(feature)
-            # Add Label as car to training set
-            test_labels.append(0)
+            test_labels.append(lbl_id)
 
     ##############################################
     #   Lets see what we have till now

@@ -22,5 +22,5 @@ class IMG:
         cv.imwrite(tgt_path, self.img)
 
     def convert_for_tf(self, tgt_path):
-        self.resize(100, 100)
+        self.resize(60, 60)
         self.save(tgt_path)
