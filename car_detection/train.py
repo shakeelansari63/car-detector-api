@@ -142,7 +142,7 @@ def train_model():
 
     # Step 7: Fully Connected Neural Network for output
     classifier.add(Dense(
-        units=2,
+        units=21,
         activation='softmax'
     ))
 
